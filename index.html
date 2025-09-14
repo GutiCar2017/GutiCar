@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GutiCar - שטיפת רכב מקצועית</title>
+    <meta name="description" content="GutiCar - שטיפת רכב מקצועית במגדל העמק. שטיפת ידנית, פוליש, וקס, שחזור פנסים וניקוי פנים יסודי.">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e40af',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('http://static.photos/automotive/1200x630/10');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-center">
+                <div class="flex-1 hidden md:flex justify-start">
+                    <div class="flex space-x-2 language-selector">
+                        <button onclick="changeLanguage('en')" class="px-3 py-1 rounded-full text-sm bg-gray-200 hover:bg-gray-300 text-gray-800">EN</button>
+                        <button onclick="changeLanguage('he')" class="px-3 py-1 rounded-full text-sm bg-primary hover:bg-blue-700 text-white">HE</button>
+                        <button onclick="changeLanguage('ar')" class="px-3 py-1 rounded-full text-sm bg-gray-200 hover:bg-gray-300 text-gray-800">AR</button>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-primary mx-4">
+                    <span class="en">GutiCar</span>
+                    <span class="he">גוטיקאר</span>
+                    <span class="ar hidden">جوتي كار</span>
+                </div>
+                <div class="flex-1 hidden md:flex justify-end space-x-8">
+                    <a href="#services" class="text-gray-700 hover:text-primary transition px-3">
+                        <span class="en">Services</span>
+                        <span class="he hidden">שירותים</span>
+                        <span class="ar hidden">خدمات</span>
+                    </a>
+                    <a href="#about" class="text-gray-700 hover:text-primary transition px-3">
+                        <span class="en">About Us</span>
+                        <span class="he hidden">אודות</span>
+                        <span class="ar hidden">من نحن</span>
+                    </a>
+                    <a href="#contact" class="text-gray-700 hover:text-primary transition px-3">
+                        <span class="en">Contact</span>
+                        <span class="he hidden">יצירת קשר</span>
+                        <span class="ar hidden">اتصل بنا</span>
+                    </a>
+                </div>
+                <button class="md:hidden focus:outline-none" id="mobile-menu-button">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-white py-2 px-4 shadow-lg" id="mobile-menu">
+            <a href="#services" class="block py-3 px-4 text-gray-700 hover:text-primary transition">
+                <span class="en">Services</span>
+                <span class="he hidden">שירותים</span>
+                <span class="ar hidden">خدمات</span>
+            </a>
+            <a href="#about" class="block py-3 px-4 text-gray-700 hover:text-primary transition">
+                <span class="en">About Us</span>
+                <span class="he hidden">אודות</span>
+                <span class="ar hidden">من نحن</span>
+            </a>
+            <a href="#contact" class="block py-3 px-4 text-gray-700 hover:text-primary transition">
+                <span class="en">Contact</span>
+                <span class="he hidden">יצירת קשר</span>
+                <span class="ar hidden">اتصل بنا</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero text-white py-32 px-4">
+        <div class="container mx-auto text-center" data-aos="fade-up">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                <span class="en">Premium Car Care Services</span>
+                <span class="he hidden">שירותי טיפוח רכב מהשורה הראשונה</span>
+                <span class="ar hidden">خدمات العناية بالسيارات الممتازة</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto">
+                <span class="en">Professional hand wash, detailing, and restoration services to keep your car looking its best</span>
+                <span class="he hidden">שטיפה ידנית מקצועית, דיטיילינג ושירותי שחזור כדי לשמור על המראה הטוב ביותר של הרכב שלך</span>
+                <span class="ar hidden">غسيل يدوي محترف وخدمات ترميم للحفاظ على أفضل مظهر لسيارتك</span>
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#contact" class="bg-accent hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
+                    <span class="en">Book Now</span>
+                    <span class="he hidden">הזמן עכשיו</span>
+                    <span class="ar hidden">احجز الآن</span>
+                </a>
+                <a href="#services" class="bg-white hover:bg-gray-100 text-primary font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
+                    <span class="en">Our Services</span>
+                    <span class="he hidden">השירותים שלנו</span>
+                    <span class="ar hidden">خدماتنا</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <span class="en">Our Premium Services</span>
+                    <span class="he hidden">השירותים הפרמיים שלנו</span>
+                    <span class="ar hidden">خدماتنا المميزة</span>
+                </h2>
+                <div class="w-24 h-1 bg-accent mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Hand Wash -->
+                <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <img src="http://static.photos/automotive/640x360/1" alt="Hand Wash" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="droplet" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span class="en">Hand Wash</span>
+                                <span class="he hidden">שטיפת ידנית</span>
+                                <span class="ar hidden">غسيل يدوي</span>
+                            </h3>
+                        </div>
+                        <p class="text-gray-600">
+                            <span class="en">Gentle hand wash to prevent scratches and maintain your car's shine</span>
+                            <span class="he hidden">שטיפת ידנית עדינה למניעת שריטות ושמירה על הברק של הרכב שלך</span>
+                            <span class="ar hidden">غسيل يدوي لطيف لمنع الخدوش والحفاظ على لمعان سيارتك</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Car Detailing -->
+                <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <img src="http://static.photos/automotive/640x360/2" alt="Car Detailing" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="settings" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span class="en">Car Detailing</span>
+                                <span class="he hidden">דיטיילינג רכב</span>
+                                <span class="ar hidden">ترميم السيارات</span>
+                            </h3>
+                        </div>
+                        <p class="text-gray-600">
+                            <span class="en">Complete interior and exterior detailing including polish, wax, and paint restoration</span>
+                            <span class="he hidden">דיטיילינג פנים וחוץ מלא כולל פוליש, וקס ושחזור צבע</span>
+                            <span class="ar hidden">ترميم كامل للداخل والخارج بما في ذلك التلميع واستعادة نضارة الطلاء</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Headlight Restoration -->
+                <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <img src="http://static.photos/automotive/640x360/5" alt="Headlight Restoration" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="sun" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span class="en">Headlight Restoration</span>
+                                <span class="he hidden">ליטוש לשחזור פנסים</span>
+                                <span class="ar hidden">ترميم المصابيح الأمامية</span>
+                            </h3>
+                        </div>
+                        <p class="text-gray-600">
+                            <span class="en">Restore cloudy headlights to like-new condition for better visibility</span>
+                            <span class="he hidden">שחזור פנסים מעוננים למצב חדש לנראות טובה יותר</span>
+                            <span class="ar hidden">ترميم المصابيح الأمامية الغائمة إلى حالة جديدة لتحسين الرؤية</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Seat Wash & Deep Clean -->
+                <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <img src="http://static.photos/automotive/640x360/4" alt="Seat Wash" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="activity" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span class="en">Seat Wash & Deep Clean</span>
+                                <span class="he hidden">שטיפת מושבים וניקוי עמוק</span>
+                                <span class="ar hidden">غسيل المقاعد وتنظيف عميق</span>
+                            </h3>
+                        </div>
+                        <p class="text-gray-600">
+                            <span class="en">Thorough cleaning of seats, carpets, and interior surfaces to remove stains and odors</span>
+                            <span class="he hidden">ניקוי יסודי של מושבים, שטיחים ומשטחים פנימיים להסרת כתמים וריחות</span>
+                            <span class="ar hidden">تنظيف شامل للمقاعد والسجاد والأسطح الداخلية لإزالة البقع والروائح</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Paint Restoration -->
+                <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <img src="http://static.photos/automotive/640x360/6" alt="Paint Restoration" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="pen-tool" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span class="en">Paint Restoration</span>
+                                <span class="he hidden">שחזור צבע</span>
+                                <span class="ar hidden">ترميم الطلاء</span>
+                            </h3>
+                        </div>
+                        <p class="text-gray-600">
+                            <span class="en">Professional paint restoration to remove swirl marks and bring back the original shine</span>
+                            <span class="he hidden">שחזור צבע מקצועי להסרת סימני סיבוב ולהחזרת הברק המקורי</span>
+                            <span class="ar hidden">ترميم طلاء احترافي لإزالة علامات الدوامة وإعادة اللمعان الأصلي</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Car Accessories -->
+                <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <img src="http://static.photos/automotive/640x360/3" alt="Car Accessories" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="shopping-bag" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">
+                                <span class="en">Car Accessories</span>
+                                <span class="he hidden">אביזרי רכב</span>
+                                <span class="ar hidden">اكسسوارات السيارات</span>
+                            </h3>
+                        </div>
+                        <p class="text-gray-600">
+                            <span class="en">Premium car accessories to enhance your vehicle's functionality and style</span>
+                            <span class="he hidden">אביזרי רכב פרמיים לשיפור החווית הנהיגה והנראות של רכבך</span>
+                            <span class="ar hidden">اكسسوارات سيارات مميزة لتعزيز وظيفة وأسلوب سيارتك</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10" data-aos="fade-right">
+                    <img src="http://static.photos/automotive/640x360/7" alt="Our Team" class="rounded-lg shadow-xl w-full">
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+                        <span class="en">About Our Car Wash</span>
+                        <span class="he hidden">אודות השטיפה שלנו </span>
+                        <span class="ar hidden">حول مغسلة سياراتنا</span>
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                        <span class="en">Located in Migdal HaEmek, we've been providing top-quality car wash and detailing services since 2017. Our team of professionals takes pride in delivering exceptional results using the latest techniques and premium products.</span>
+                        <span class="he hidden">ממוקם בגדל העמק, אנו מספקים שירותי שטיפת רכב ודיטיילינג באיכות גבוהה מאז 2010. הצוות המקצועי שלנו גאה בהצעת תוצאות יוצאות דופן באמצעות הטכניקות והמוצרים הפרמיים האחרונים.</span>
+                        <span class="ar hidden">تقع في مجدال هعيمك ، نقدم خدمات غسيل السيارات والتفصيل عالية الجودة منذ عام 2010. يفخر فريقنا المحترف بتقديم نتائج استثنائية باستخدام أحدث التقنيات والمنتجات المتميزة.</span>
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        <span class="en">We believe in treating every vehicle with the utmost care and attention to detail, ensuring your car not only looks great but is protected for the long term.</span>
+                        <span class="he hidden">אנו מאמינים בטיפול בכל רכב עם תשומת לב מירבית לפרטים, ומבטיחים שהרכב שלך לא רק ייראה מצוין אלא גם יהיה מוגן לטווח הארוך.</span>
+                        <span class="ar hidden">نحن نؤمن بمعاملة كل مركبة بأقصى قدر من العناية والاهتمام بالتفاصيل ، مما يضمن أن سيارتك لا تبدو رائعة فحسب ، بل محمية على المدى الطويل.</span>
+                    </p>
+                    <div class="bg-primary bg-opacity-10 border-l-4 border-primary p-4">
+                        <p class="text-gray-800 italic">
+                            <span class="en">"Your car deserves the best care - that's our promise."</span>
+                            <span class="he hidden">"הרכב שלך ראוי לטיפול הטוב ביותר - זאת ההבטחה שלנו."</span>
+                            <span class="ar hidden">"سيارتك تستحق أفضل رعاية - هذا هو وعدنا."</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <span class="en">Contact Us</span>
+                    <span class="he hidden">צור קשר</span>
+                    <span class="ar hidden">اتصل بنا</span>
+                </h2>
+                <div class="w-24 h-1 bg-accent mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-10">
+                <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-md" data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                        <span class="en">Get In Touch</span>
+                        <span class="he hidden">צור קשר</span>
+                        <span class="ar hidden">ابقى على تواصل</span>
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="phone" class="text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">
+                                    <span class="en">Phone</span>
+                                    <span class="he hidden">טלפון</span>
+                                    <span class="ar hidden">هاتف</span>
+                                </h4>
+                                <a href="tel:+972546667767" class="text-gray-600 hover:text-primary transition">+972-54-666-7767</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="mail" class="text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">
+                                    <span class="en">Email</span>
+                                    <span class="he hidden">אימייל</span>
+                                    <span class="ar hidden">بريد إلكتروني</span>
+                                </h4>
+                                <a href="mailto:heshbonot2020@gmail.com" class="text-gray-600 hover:text-primary transition">heshbonot2020@gmail.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-primary p-2 rounded-full mr-4">
+                                <i data-feather="map-pin" class="text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">
+                                    <span class="en">Location</span>
+                                    <span class="he hidden">מיקום</span>
+                                    <span class="ar hidden">موقع</span>
+                                </h4>
+                                <p class="text-gray-600">
+                                    <span class="en">Migdal HaEmek, Israel</span>
+                                    <span class="he hidden">מגדל העמק, ישראל</span>
+                                    <span class="ar hidden">مجدال هعيمك، إسرائيل</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 pt-4">
+                            <a href="https://waze.com/ul/hsvc1cfv8u" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full transition duration-300">
+                                <i data-feather="navigation"></i>
+                            </a>
+                            <a href="https://wa.me/972546667767" target="_blank" class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-full transition duration-300">
+                                <i data-feather="message-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-md" data-aos="fade-left">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                        <span class="en">Send Us a Message</span>
+                        <span class="he hidden">שלח לנו הודעה</span>
+                        <span class="ar hidden">أرسل لنا رسالة</span>
+                    </h3>
+                    
+                    <form class="space-y-4">
+                        <div>
+                            <label for="name" class="block text-gray-700 font-medium mb-2">
+                                <span class="en">Name</span>
+                                <span class="he hidden">שם</span>
+                                <span class="ar hidden">اسم</span>
+                            </label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-gray-700 font-medium mb-2">
+                                <span class="en">Email</span>
+                                <span class="he hidden">אימייל</span>
+                                <span class="ar hidden">بريد إلكتروني</span>
+                            </label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                        </div>
+                        
+                        <div>
+                            <label for="phone" class="block text-gray-700 font-medium mb-2">
+                                <span class="en">Phone</span>
+                                <span class="he hidden">טלפון</span>
+                                <span class="ar hidden">هاتف</span>
+                            </label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-700 font-medium mb-2">
+                                <span class="en">Message</span>
+                                <span class="he hidden">הודעה</span>
+                                <span class="ar hidden">رسالة</span>
+                            </label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                            <span class="en">Send Message</span>
+                            <span class="he hidden">שלח הודעה</span>
+                            <span class="ar hidden">إرسال الرسالة</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-2xl font-bold mb-4">
+                        <span class="en">GutiCar</span>
+                        <span class="he">גוטיקר</span>
+                        <span class="ar hidden">جوتي كار</span>
+                    </h3>
+                    <p class="text-gray-400">
+                        <span class="en">Professional car care services in Migdal HaEmek</span>
+                        <span class="he hidden">שירותי טיפוח רכב מקצועיים במגדל העמק</span>
+                        <span class="ar hidden">خدمات العناية بالسيارات المحترفة في مجدال هعيمك</span>
+                    </p>
+                </div>
+                
+                <div class="flex flex-col items-center md:items-end">
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="instagram"></i>
+                        </a>
+                        <a href="https://wa.me/972546667767" target="_blank" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="message-circle"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        &copy; <span class="en">2017 GutiCar. All rights reserved.</span>
+                        <span class="he hidden">2017 גוטיקאר. כל הזכויות שמורות.</span>
+                        <span class="ar hidden">2017 גוטיקאר . كل الحقوق محفوظة.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Language switcher
+        function changeLanguage(lang) {
+            // Hide all language elements
+            document.querySelectorAll('.en, .he, .ar').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // Show elements for selected language
+            document.querySelectorAll('.' + lang).forEach(el => {
+                el.classList.remove('hidden');
+            });
+            
+            // Update active button
+            document.querySelectorAll('.language-selector button').forEach(btn => {
+                if (btn.textContent === lang.toUpperCase()) {
+                    btn.classList.remove('bg-gray-200', 'text-gray-800');
+                    btn.classList.add('bg-primary', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-200', 'text-gray-800');
+                    btn.classList.remove('bg-primary', 'text-white');
+                }
+            });
+            
+            // Change HTML direction for RTL languages
+            if (lang === 'he' || lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+            } else {
+                document.documentElement.dir = 'ltr';
+            }
+        }
+
+        // Add language selector class to mobile menu buttons
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.classList.add('language-selector');
+        });
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Set Hebrew as default language
+        document.addEventListener('DOMContentLoaded', function() {
+            changeLanguage('he');
+        });
+    </script>
+    <script>feather.replace();</script>
+</body>
+</html>
