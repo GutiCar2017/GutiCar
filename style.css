@@ -1,0 +1,27 @@
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('http://static.photos/automotive/1200x630/10');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Additional styles for language classes */
+.en, .he, .ar {
+    transition: opacity 0.3s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+}
