@@ -4,18 +4,49 @@
 }
 
 .hero {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('http://static.photos/automotive/1200x630/10');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://static.photos/automotive/1200x630/10');
     background-size: cover;
     background-position: center;
 }
 
-/* Additional styles for language classes */
-.en, .he, .ar {
+/* Language visibility */
+.en, .he, .ar, .ru {
     transition: opacity 0.3s ease;
 }
-
 .hidden {
     display: none;
+}
+
+/* Skip link (keyboard accessibility) */
+.skip-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-120%);
+    background: #111827;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    z-index: 9999;
+    border-radius: 0 0 0.75rem 0;
+}
+.skip-link:focus {
+    transform: translateY(0);
+    outline: none;
+}
+
+/* Strong visible focus for keyboard users */
+:focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 3px;
+}
+
+/* Respect reduced motion preferences (AOS + animations) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+    }
 }
 
 /* Responsive adjustments */
@@ -25,3 +56,36 @@
         padding-bottom: 6rem;
     }
 }
+
+/* --- SPA routes --- */
+.route { display: none; }
+.route.active { display: block; }
+
+/* --- Product grid --- */
+.grid-products {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+@media (min-width: 768px) {
+    .grid-products {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+.product-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+.product-body { padding: 0.9rem; }
+.product-title { font-weight: 700; }
+.product-desc { color: #4b5563; margin-top: 0.25rem; }
+.product-price { margin-top: 0.5rem; font-weight: 800; color: #111827; }
+.back-link { color: #2563eb; }
+.back-link:hover { text-decoration: underline; }
