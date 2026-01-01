@@ -1,290 +1,251 @@
-(() => {
-  const LANGS = ['en', 'he', 'ar', 'ru'];
-  const RTL_LANGS = new Set(['he', 'ar']);
-  const DEFAULT_LANG = 'he';
-  const WHATSAPP_NUMBER_E164 = '972546667767';
+'use strict';
 
-  function setHtmlLangDir(lang) {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = RTL_LANGS.has(lang) ? 'rtl' : 'ltr';
+/* ---------- Helpers ---------- */
+function qs(sel, root = document) { return root.querySelector(sel); }
+function qsa(sel, root = document) { return [...root.querySelectorAll(sel)]; }
+
+function setStatus(msg) {
+  const el = qs('#formStatus');
+  if (!el) return;
+  el.classList.remove('sr-only');
+  el.textContent = msg;
+}
+
+function currentLang() {
+  // Based on which language spans are visible
+  if (!qsa('.he').some(el => el.classList.contains('hidden'))) return 'he';
+  if (!qsa('.en').some(el => el.classList.contains('hidden'))) return 'en';
+  if (!qsa('.ar').some(el => el.classList.contains('hidden'))) return 'ar';
+  return 'ru';
+}
+
+function t(objOrStr) {
+  if (objOrStr && typeof objOrStr === 'object') {
+    const lang = currentLang();
+    return objOrStr[lang] || objOrStr.he || objOrStr.en || objOrStr.ar || objOrStr.ru || '';
   }
+  return objOrStr || '';
+}
 
-  function showOnlyLang(lang) {
-    document.querySelectorAll('.en, .he, .ar, .ru').forEach(el => el.classList.add('hidden'));
-    document.querySelectorAll('.' + lang).forEach(el => el.classList.remove('hidden'));
-  }
+function escapeHTML(str) {
+  // Good security practice even for “static” data
+  return String(str)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
-  function updateLangButtons(lang) {
-    document.querySelectorAll('.language-selector button').forEach(btn => {
-      const isActive = btn.textContent.trim().toLowerCase() === lang;
-      btn.setAttribute('aria-pressed', String(isActive));
-      if (isActive) {
-        btn.classList.remove('bg-gray-200', 'text-gray-800');
-        btn.classList.add('bg-primary', 'text-white');
-      } else {
-        btn.classList.add('bg-gray-200', 'text-gray-800');
-        btn.classList.remove('bg-primary', 'text-white');
+/* ---------- Catalog (category page data) ---------- */
+const CATALOG = {
+  HandWash: {
+    title: { he: 'שטיפה ידנית', en: 'Hand Wash', ar: 'غسيل يدوي', ru: 'Ручная мойка' },
+    subtitle: { he: 'שטיפה עדינה ומדויקת לשמירה על הצבע', en: 'Gentle wash that protects your paint', ar: 'غسيل لطيف يحمي الطلاء', ru: 'Деликатная мойка для защиты ЛКП' },
+    items: [
+      {
+        src: 'assets/Hand Wash/floor-mats.jpg',
+        title: { he: 'שמפו מקצועי', en: 'Professional shampoo', ar: 'شامبو احترافي', ru: 'Проф. шампунь' },
+        desc: { he: 'ניקוי עדין ללא שריטות', en: 'Careful cleaning without scratches', ar: 'تنظيف دقيق بدون خدوش', ru: 'Аккуратно, без царапин' },
+        price: '₪10'
       }
-    });
+    ]
+  },
+
+  CarAccessories: {
+    title: { he:'אביזרי רכב', en:'Car Accessories', ar:'اكسسوارات السيارات', ru:'Автомобильные аксессуары' },
+    subtitle: { he:'מבחר אביזרים לשדרוג הרכב', en:'Accessories to enhance your car', ar:'مجموعة لتحسين سيارتك', ru:'Аксессуары для вашего авто' },
+    items: [
+      {
+        src: 'assets/Car Accessories/floor-mats.jpg',
+        title: { he:'שטיחונים', en:'Floor Mats', ar:'فرش الأرضية', ru:'Коврики' },
+        desc:  { he:'סט 4 חלקים, קל לניקוי', en:'4-piece set, easy to clean', ar:'مجموعة 4 قطع سهلة التنظيف', ru:'Набор из 4, легко мыть' },
+        price: '₪120'
+      },
+      {
+        src: 'assets/Car Accessories/phone-holder.jpg',
+        title: { he:'מחזיק לטלפון', en:'Phone Holder', ar:'حامل هاتف', ru:'Держатель телефона' },
+        desc:  { he:'מתכוונן ויציב', en:'Adjustable & stable', ar:'قابل للتعديل وثابت', ru:'Регулируемый и устойчивый' },
+        price: '₪60'
+      },
+      {
+        src: 'assets/Car Accessories/seat-cover.jpg',
+        title: { he:'כיסויי מושבים', en:'Seat Covers', ar:'أغطية مقاعد', ru:'Чехлы на сиденья' },
+        desc:  { he:'בד נושם, התקנה קלה', en:'Breathable, easy install', ar:'قماش قابل للتنفس، تركيب سهل', ru:'Дышащая ткань, лёгкая установка' },
+        price: '₪220'
+      }
+    ]
+  }
+};
+
+/* ---------- Routing (SPA-like) ---------- */
+function showHome() {
+  qs('[data-route="category"]')?.classList.remove('active');
+  qs('[data-route="home"]')?.classList.add('active');
+  if (window.AOS) setTimeout(() => AOS.refreshHard(), 30);
+}
+
+function renderCategory(slug) {
+  const data = CATALOG[slug];
+  if (!data) {
+    location.hash = '#/home';
+    return;
   }
 
-  function getCurrentLang() {
-    const saved = localStorage.getItem('lang');
-    if (saved && LANGS.includes(saved)) return saved;
+  qs('[data-route="home"]')?.classList.remove('active');
+  qs('[data-route="category"]')?.classList.add('active');
 
-    // fallback: infer from visible elements
-    if (![...document.querySelectorAll('.he')].some(el => el.classList.contains('hidden'))) return 'he';
-    if (![...document.querySelectorAll('.en')].some(el => el.classList.contains('hidden'))) return 'en';
-    if (![...document.querySelectorAll('.ar')].some(el => el.classList.contains('hidden'))) return 'ar';
-    return 'ru';
-  }
+  const titleEl = qs('#catTitle');
+  const subEl = qs('#catSubtitle');
+  const grid = qs('#productGrid');
 
-  // Expose for inline onclick in HTML
-  window.changeLanguage = function changeLanguage(lang) {
-    if (!LANGS.includes(lang)) return;
-    localStorage.setItem('lang', lang);
-    setHtmlLangDir(lang);
-    showOnlyLang(lang);
-    updateLangButtons(lang);
+  if (titleEl) titleEl.textContent = t(data.title);
+  if (subEl) subEl.textContent = t(data.subtitle);
 
-    // Refresh animations/icons after DOM changes
-    if (window.AOS) setTimeout(() => AOS.refreshHard(), 50);
-    if (window.feather) feather.replace();
-
-    // If user is on a category route, re-render it so text matches language
-    if (location.hash.startsWith('#/category/')) route();
-  };
-
-  /* ====== SPA Router + Category rendering ====== */
-
-  const CATALOG = {
-    HandWash: {
-      title:    { he: 'שטיפה ידנית', en: 'Hand Wash', ar: 'غسيل يدوي', ru: 'Ручная мойка' },
-      subtitle: { he: 'שטיפה עדינה לשמירה על צבע וברק', en: 'Gentle wash to protect paint & shine', ar: 'غسيل لطيف لحماية الطلاء', ru: 'Бережная мойка для защиты ЛКП' },
-      items: [
-        {
-          src: 'assets/Hand Wash/floor-mats.jpg',
-          title: { he: 'סבונים ייעודיים', en: 'Special Soaps', ar: 'منظفات مخصصة', ru: 'Специальные шампуни' },
-          desc:  { he: 'מותאם לסוג הלכלוך ולגימור', en: 'Matched to dirt type and finish', ar: 'مناسب لنوع الأوساخ', ru: 'Подбор под тип загрязнения' },
-          price: '₪10'
-        },
-      ]
-    },
-
-    CarDetailing: {
-      title:    { he: 'דיטיילינג', en: 'Car Detailing', ar: 'تفصيل السيارة', ru: 'Детейлинг' },
-      subtitle: { he: 'ניקוי פנים וחוץ ברמת פרטים', en: 'Deep interior/exterior detailing', ar: 'تنظيف عميق', ru: 'Глубокая уборка' },
-      items: []
-    },
-
-    HeadlightRestoration: {
-      title:    { he: 'שחזור פנסים', en: 'Headlight Restoration', ar: 'ترميم المصابيح', ru: 'Восстановление фар' },
-      subtitle: { he: 'שיפור נראות ובטיחות', en: 'Improve visibility & safety', ar: 'تحسين الرؤية', ru: 'Лучше видимость и безопасность' },
-      items: []
-    },
-
-    SeatWash: {
-      title:    { he: 'ניקוי מושבים', en: 'Seat Wash & Deep Clean', ar: 'تنظيف المقاعد', ru: 'Чистка сидений' },
-      subtitle: { he: 'הסרת כתמים וריחות', en: 'Remove stains and odors', ar: 'إزالة البقع والروائح', ru: 'Удаление пятен и запахов' },
-      items: []
-    },
-
-    PaintRestoration: {
-      title:    { he: 'שחזור צבע', en: 'Paint Restoration', ar: 'ترميم الطلاء', ru: 'Восстановление краски' },
-      subtitle: { he: 'החזרת ברק והסרת סימנים', en: 'Restore shine and remove marks', ar: 'استعادة اللمعان', ru: 'Возврат блеска' },
-      items: []
-    },
-
-    CarAccessories: {
-      title:    { he: 'אביזרי רכב', en: 'Car Accessories', ar: 'اكسسوارات السيارات', ru: 'Автомобильные аксессуары' },
-      subtitle: { he: 'מבחר אביזרים לשדרוג הרכב', en: 'Accessories to enhance your car', ar: 'مجموعة لتحسين سيارتك', ru: 'Аксессуары для вашего авто' },
-      items: [
-        {
-          src: 'assets/Car Accessories/floor-mats.jpg',
-          title: { he: 'שטיחונים', en: 'Floor Mats', ar: 'فرش الأرضية', ru: 'Коврики' },
-          desc:  { he: 'סט 4 חלקים, קל לניקוי', en: '4-piece set, easy to clean', ar: 'مجموعة 4 قطع سهلة التنظيف', ru: 'Набор из 4, легко мыть' },
-          price: '₪120'
-        },
-        {
-          src: 'assets/Car Accessories/phone-holder.jpg',
-          title: { he: 'מחזיק לטלפון', en: 'Phone Holder', ar: 'حامل هاتف', ru: 'Держатель телефона' },
-          desc:  { he: 'מתכוונן ויציב', en: 'Adjustable & stable', ar: 'قابل للتعديل وثابت', ru: 'Регулируемый и устойчивый' },
-          price: '₪60'
-        },
-        {
-          src: 'assets/Car Accessories/seat-cover.jpg',
-          title: { he: 'כיסויי מושבים', en: 'Seat Covers', ar: 'أغطية مقاعد', ru: 'Чехлы на сиденья' },
-          desc:  { he: 'בד נושם, התקנה קלה', en: 'Breathable, easy install', ar: 'قماش قابل للتنفس، تركيب سهل', ru: 'Дышащая ткань, лёгкая установка' },
-          price: '₪220'
-        }
-      ]
-    },
-  };
-
-  function t(obj) {
-    const lang = getCurrentLang();
-    if (!obj || typeof obj !== 'object') return String(obj || '');
-    return obj[lang] || obj.he || obj.en || obj.ar || obj.ru || '';
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
-
-  function renderCategory(slug) {
-    const data = CATALOG[slug];
-    if (!data) {
-      location.hash = '#/home';
-      return;
-    }
-
-    document.querySelector('[data-route="home"]')?.classList.remove('active');
-    document.querySelector('[data-route="category"]')?.classList.add('active');
-
-    document.getElementById('catTitle').textContent = t(data.title);
-    document.getElementById('catSubtitle').textContent = t(data.subtitle);
-
-    const grid = document.getElementById('productGrid');
-    const items = Array.isArray(data.items) ? data.items : [];
-
-    grid.innerHTML = items.map(item => {
-      const img = escapeHtml(item.src || '');
-      const title = escapeHtml(t(item.title));
-      const desc = escapeHtml(t(item.desc));
-      const price = escapeHtml(item.price || '');
+  if (grid) {
+    grid.innerHTML = (data.items || []).map(item => {
+      const img = escapeHTML(item.src || '');
+      const ttl = escapeHTML(t(item.title));
+      const desc = escapeHTML(t(item.desc));
+      const price = item.price ? `<div class="product-price">${escapeHTML(item.price)}</div>` : '';
 
       return `
         <div class="product-card">
-          <img src="${img}" alt="${title}">
+          <img src="${img}" alt="${ttl}">
           <div class="product-body">
-            <div class="product-title">${title}</div>
-            ${desc ? `<div class="product-desc">${desc}</div>` : ''}
-            ${price ? `<div class="product-price">${price}</div>` : ''}
+            <div class="product-title">${ttl}</div>
+            <div class="product-desc">${desc}</div>
+            ${price}
           </div>
         </div>
       `;
     }).join('');
-
-    if (window.AOS) setTimeout(() => AOS.refreshHard(), 50);
   }
 
-  function showHome() {
-    document.querySelector('[data-route="category"]')?.classList.remove('active');
-    document.querySelector('[data-route="home"]')?.classList.add('active');
-    if (window.AOS) setTimeout(() => AOS.refreshHard(), 50);
+  if (window.AOS) setTimeout(() => AOS.refreshHard(), 30);
+}
+
+function route() {
+  const h = (location.hash || '#/home').replace('#/', '');
+  if (h.startsWith('category/')) {
+    const slug = h.split('/')[1];
+    renderCategory(slug);
+  } else {
+    showHome();
   }
+}
 
-  function route() {
-    const h = (location.hash || '#/home').replace('#/', '');
-    if (h.startsWith('category/')) {
-      const slug = h.split('/')[1];
-      renderCategory(slug);
-    } else {
-      showHome();
-    }
-  }
+/* ---------- Language switching ---------- */
+function changeLanguage(lang) {
+  // Hide all language blocks
+  qsa('.en, .he, .ar, .ru').forEach(el => el.classList.add('hidden'));
+  // Show chosen language
+  qsa('.' + lang).forEach(el => el.classList.remove('hidden'));
 
-  /* ====== Mobile menu accessibility ====== */
-  function setupMobileMenu() {
-    const btn = document.getElementById('mobile-menu-button');
-    const menu = document.getElementById('mobile-menu');
-    if (!btn || !menu) return;
+  // Update <html> lang + dir
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'he' || lang === 'ar') ? 'rtl' : 'ltr';
 
-    btn.addEventListener('click', () => {
-      const isHidden = menu.classList.toggle('hidden');
-      const expanded = !isHidden;
-      btn.setAttribute('aria-expanded', String(expanded));
-      btn.setAttribute('aria-label', expanded ? 'Close menu' : 'Open menu');
-    });
-
-    // close menu when a link is clicked
-    menu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        if (!menu.classList.contains('hidden')) {
-          menu.classList.add('hidden');
-          btn.setAttribute('aria-expanded', 'false');
-          btn.setAttribute('aria-label', 'Open menu');
-        }
-      });
-    });
-  }
-
-  /* ====== “Low cost” contact form: send to WhatsApp ====== */
-  function setupContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-
-    const status = document.getElementById('formStatus');
-
-    function setStatus(msg) {
-      if (!status) return;
-      status.textContent = msg;
-      status.classList.remove('sr-only');
-      setTimeout(() => status.classList.add('sr-only'), 4000);
-    }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const name = (form.name?.value || '').trim();
-      const email = (form.email?.value || '').trim();
-      const phone = (form.phone?.value || '').trim();
-      const message = (form.message?.value || '').trim();
-
-      if (!name || !message) {
-        setStatus(t({
-          he: 'נא למלא שם והודעה.',
-          en: 'Please fill in name and message.',
-          ar: 'يرجى إدخال الاسم والرسالة.',
-          ru: 'Пожалуйста, заполните имя и сообщение.'
-        }));
-        return;
-      }
-
-      const lines = [
-        `Name: ${name}`,
-        email ? `Email: ${email}` : null,
-        phone ? `Phone: ${phone}` : null,
-        `Message: ${message}`,
-      ].filter(Boolean);
-
-      const text = encodeURIComponent(lines.join('\n'));
-      const url = `https://wa.me/${WHATSAPP_NUMBER_E164}?text=${text}`;
-
-      setStatus(t({
-        he: 'פותח WhatsApp לשליחה…',
-        en: 'Opening WhatsApp to send…',
-        ar: 'جارٍ فتح واتساب للإرسال…',
-        ru: 'Открываю WhatsApp для отправки…'
-      }));
-
-      window.open(url, '_blank', 'noopener,noreferrer');
-      form.reset();
-    });
-  }
-
-  /* ====== Init ====== */
-  document.addEventListener('DOMContentLoaded', () => {
-    // Apply saved/default language
-    const lang = localStorage.getItem('lang') || DEFAULT_LANG;
-    window.changeLanguage(LANGS.includes(lang) ? lang : DEFAULT_LANG);
-
-    setupMobileMenu();
-    setupContactForm();
-
-    // AOS + icons
-    if (window.AOS) {
-      AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
-    }
-    if (window.feather) feather.replace();
-
-    route();
+  // Update aria-pressed + button styling
+  qsa('.language-selector button').forEach(btn => {
+    const isActive = btn.textContent.trim().toUpperCase() === lang.toUpperCase();
+    btn.setAttribute('aria-pressed', String(isActive));
+    btn.classList.toggle('bg-primary', isActive);
+    btn.classList.toggle('text-white', isActive);
+    btn.classList.toggle('bg-gray-200', !isActive);
+    btn.classList.toggle('text-gray-800', !isActive);
   });
 
-  window.addEventListener('hashchange', route);
-})();
+  // If currently on category route, re-render category to update titles/descriptions
+  if ((location.hash || '').startsWith('#/category/')) route();
+}
+
+// Expose for inline onclick in HTML
+window.changeLanguage = changeLanguage;
+
+/* ---------- Mobile menu (accessible toggle) ---------- */
+function setupMobileMenu() {
+  const btn = qs('#mobile-menu-button');
+  const menu = qs('#mobile-menu');
+  if (!btn || !menu) return;
+
+  // Ensure ARIA attrs exist even if HTML didn’t include them
+  btn.setAttribute('aria-controls', 'mobile-menu');
+  btn.setAttribute('aria-expanded', 'false');
+
+  function closeMenu() {
+    menu.classList.add('hidden');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', () => {
+    const willOpen = menu.classList.contains('hidden');
+    menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(willOpen));
+  });
+
+  // Close on link click (better UX on mobile)
+  qsa('a', menu).forEach(a => a.addEventListener('click', closeMenu));
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+}
+
+/* ---------- Contact form → WhatsApp deep link ---------- */
+function setupContactForm() {
+  const form = qs('#contactForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = (qs('#name')?.value || '').trim();
+    const phone = (qs('#phone')?.value || '').trim();
+    const email = (qs('#email')?.value || '').trim();
+    const message = (qs('#message')?.value || '').trim();
+
+    if (!name || !message) {
+      setStatus(currentLang() === 'he'
+        ? 'נא למלא שם והודעה לפני שליחה.'
+        : 'Please fill in Name and Message before sending.');
+      return;
+    }
+
+    // Build message text (data → URL encoding → HTTPS request)
+    const composed =
+      `Name: ${name}\n` +
+      (phone ? `Phone: ${phone}\n` : '') +
+      (email ? `Email: ${email}\n` : '') +
+      `Message:\n${message}`;
+
+    const to = '972546667767'; // business WhatsApp number (no +)
+    const url = `https://wa.me/${to}?text=${encodeURIComponent(composed)}`;
+
+    setStatus(currentLang() === 'he'
+      ? 'פותח WhatsApp לשליחת ההודעה…'
+      : 'Opening WhatsApp to send your message…');
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+  });
+}
+
+/* ---------- Init ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  // AOS + icons
+  if (window.AOS) {
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+  }
+  if (window.feather) feather.replace();
+
+  // Default language (matches your UI)
+  changeLanguage('he');
+
+  setupMobileMenu();
+  setupContactForm();
+
+  route();
+});
+
+window.addEventListener('hashchange', route);
