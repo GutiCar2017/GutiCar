@@ -205,6 +205,15 @@ function setupContactForm() {
     const phone = (qs('#phone')?.value || '').trim();
     const email = (qs('#email')?.value || '').trim();
     const message = (qs('#message')?.value || '').trim();
+    const consent = qs('#whatsappConsent')?.checked;
+    if (!consent) {
+      setStatus(currentLang() === 'he'
+        ? 'כדי לשלוח הודעה יש לאשר שליחה דרך WhatsApp.'
+        : 'To send a message, please confirm WhatsApp sending.');
+      qs('#whatsappConsent')?.focus();
+      return;
+}
+
 
     if (!name || !message) {
       setStatus(currentLang() === 'he'
